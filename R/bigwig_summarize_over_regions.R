@@ -74,7 +74,7 @@ bigwig_summarize_over_regions = function(bw_filepaths, bed_filepath = NULL,
   # Use bigWigAverageOverBed to calculate mean value for each bigwig file for each region in the BED file and save the results in output directory
   foreach::foreach(bigwig_number = seq_along(bw_filepaths)) %dopar% {
     system(paste(system.file("extdata", "bigWigAverageOverBed", package = "genomeTools"), bw_filepaths[bigwig_number], bed_filepath, 
-      paste(temp_dir, summary_over_bed_file_names[bigwig_number], sep = "/")))}
+      paste(temp_dir, summary_over_bed_file_names[bigwig_number], sep = "/")), ignore.stderr = TRUE)}
   
   # Create a matrix with rows corresponding to genomic regions and columns corresponding to genomic features
   region_values = data.frame(foreach::foreach(result_file = 
