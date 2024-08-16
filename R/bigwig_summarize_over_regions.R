@@ -52,7 +52,7 @@ bigwig_summarize_over_regions = function(bw_filepaths, bed_filepath = NULL,
   statistic_col = ifelse(statistic == "sum", 4, ifelse(statistic == "mean0", 5, 6))
   
   # Create temporary output directory
-  temp_dir = tempfile("bigWigAverageOverBed_apply_tmp")
+  temp_dir = tempfile("bigwig_summarize_over_regions_tmp/")
   dir.create(temp_dir)
   
   # Create names for the output files that will be produced by bigWigAverageOverBed  
@@ -79,7 +79,7 @@ bigwig_summarize_over_regions = function(bw_filepaths, bed_filepath = NULL,
   # Create a matrix with rows corresponding to genomic regions and columns corresponding to genomic features
   region_values = data.frame(foreach::foreach(result_file = 
    list.files(temp_dir, full.names = T), .combine = "cbind") %dopar% {
-     data.table::fread(result_file, sep = "\t", header = F, select = statistic_col)
+     data.table::fread(result_file, sep = "\t", header = F, select = statistic_col, nThread = 1)
   })
   
   # Remove temporary files
