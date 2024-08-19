@@ -25,7 +25,6 @@ Imports:
     foreach,
     GenomeInfoDb,
     GenomicRanges,
-    HGNChelper,
     IRanges,
     parallel,
     R.utils,
