@@ -104,7 +104,7 @@ calculate_regions_intersections <- function(gr1, gr2, ignore.strand = TRUE, over
 adjust_gr = function(gr, upstream = 0, downstream = 0) {
   
   # Check for each range if it's on the negative or positive strand
-  strand_is_minus = strand(gr) == "-"
+  strand_is_minus = as.character(strand(gr) == "-")
   on_plus = which(!strand_is_minus)
   on_minus = which(strand_is_minus)
   
