@@ -3,8 +3,8 @@
 # Load required packages
 library(biomaRt)
 
-# Get gene mart for hg38 version 103 
-gene_mart_hg38 = useEnsembl("ENSEMBL", dataset="hsapiens_gene_ensembl", version = 103)
+# Get gene mart for hg38 version 112
+gene_mart_hg38 = useEnsembl("ENSEMBL", dataset="hsapiens_gene_ensembl")
 
 # Download a data.frame with ensembl gene IDs, HGNC IDs and entrezgene IDs. Downloaded 2/4/21
 system.time({gene_match_df = getBM(mart = gene_mart_hg38, 
@@ -38,4 +38,4 @@ gene_conversion_list  = list(
   entrez_id_hgnc_id = sapply(split(gene_match_df$hgnc_id, gene_match_df$entrezgene_id), function(x) sort(x)[1]),
   entrez_id_hgnc_symbol = sapply(split(gene_match_df$hgnc_symbol, gene_match_df$entrezgene_id), function(x) sort(x)[1])
 )
-save(gene_conversion_list, file = "~/my_packages/genes/data/gene_conversion_list.Rdata")
+save(gene_conversion_list, file = "../data/gene_conversion_list.Rdata")

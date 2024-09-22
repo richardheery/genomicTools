@@ -66,6 +66,7 @@ count_covered_bases = function(gr){
 #' the absolute size of the intersection in base pairs, the proportion base pairs of gr1 overlapping gr2 
 #' or the Jaccard index of the intersection in terms of base pairs. Default value is "absolute".
 #' @return A numeric value
+#' @export
 calculate_regions_intersections <- function(gr1, gr2, ignore.strand = TRUE, overlap_measure = "absolute"){
   
   # Check that inputs have the correct data type
