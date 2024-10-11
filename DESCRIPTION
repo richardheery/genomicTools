@@ -24,6 +24,7 @@ Imports:
     dplyr,
     foreach,
     GenomeInfoDb,
+    genomeTools,
     GenomicRanges,
     IRanges,
     parallel,
