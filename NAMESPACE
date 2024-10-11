@@ -2,9 +2,11 @@
 
 export(adjust_gr)
 export(bigwig_summarize_over_regions)
+export(calculate_regions_intersections)
 export(check_self_overlaps)
 export(count_covered_bases)
 export(filter_gr)
+export(gene_id_convert)
 export(liftover_files)
 export(liftover_granges)
 export(merge_overlapping_regions)
