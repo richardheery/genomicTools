@@ -107,11 +107,11 @@ liftover_files = function(input_filepaths, input_filetype, output_filetype, to_g
   
   # Load correct chain file for relevent genome build
   if (to_genome_build == "hg19"){
-    chain_file = system.file("extdata", "hg38ToHg19.over.chain", package = "genomeTools")
-    chrom_sizes = system.file("extdata", "hg19_chrom_size.tsv", package = "genomeTools")
+    chain_file = system.file("extdata", "hg38ToHg19.over.chain", package = "genomicTools")
+    chrom_sizes = system.file("extdata", "hg19_chrom_size.tsv", package = "genomicTools")
   } else if (to_genome_build == "hg38"){
-    chain_file = system.file("extdata", "hg19ToHg38.over.chain", package = "genomeTools")
-    chrom_sizes = system.file("extdata", "hg38_chrom_size.tsv", package = "genomeTools")
+    chain_file = system.file("extdata", "hg19ToHg38.over.chain", package = "genomicTools")
+    chrom_sizes = system.file("extdata", "hg38_chrom_size.tsv", package = "genomicTools")
   }
   
   # Liftover files
@@ -124,13 +124,13 @@ liftover_files = function(input_filepaths, input_filetype, output_filetype, to_g
     system("echo Converting to bedGraph")
     bg_temp = tempfile()
     if(input_filetype == "bw"){
-      system(paste(system.file("extdata", "bigWigToBedGraph", package = "genomeTools"), input_filepaths[file_number], bg_temp))
+      system(paste(system.file("extdata", "bigWigToBedGraph", package = "genomicTools"), input_filepaths[file_number], bg_temp))
       current_file = bg_temp
     }
     
     # LiftOver bedGraph
     liftover_temp = tempfile()
-    system(paste(system.file("extdata", "liftOver", package = "genomeTools"), current_file, chain_file, liftover_temp, "/dev/null"))
+    system(paste(system.file("extdata", "liftOver", package = "genomicTools"), current_file, chain_file, liftover_temp, "/dev/null"))
     current_file = liftover_temp
     unlink(bg_temp)
     
@@ -138,7 +138,7 @@ liftover_files = function(input_filepaths, input_filetype, output_filetype, to_g
     system("echo Removing duplicated regions")
     overlap_removed_temp = tempfile()
     system(paste("sort -k1,1 -k2,2n -o", current_file, current_file))
-    system(paste(system.file("extdata", "bedRemoveOverlap", package = "genomeTools"), current_file, overlap_removed_temp))
+    system(paste(system.file("extdata", "bedRemoveOverlap", package = "genomicTools"), current_file, overlap_removed_temp))
     current_file = overlap_removed_temp
     unlink(liftover_temp)
     
@@ -147,7 +147,7 @@ liftover_files = function(input_filepaths, input_filetype, output_filetype, to_g
       system(paste("mv", current_file, output_filenames))
     } else if(output_filetype == "bw"){
       system("echo Converting to bigWig")
-      system(paste(system.file("extdata", "bedGraphToBigWig", package = "genomeTools"), current_file, chrom_sizes, output_filenames[file_number]))
+      system(paste(system.file("extdata", "bedGraphToBigWig", package = "genomicTools"), current_file, chrom_sizes, output_filenames[file_number]))
     }
     
     # Gzip output bedGraph if specified

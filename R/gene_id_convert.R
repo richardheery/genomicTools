@@ -22,7 +22,7 @@ gene_id_convert = function(gene_ids, input_id_type, output_id_type){
   if (input_id_type == "ensembl_id"){gene_ids = gsub("\\..*", "", gene_ids)}
   
   # Load gene_conversion_list
-  gene_conversion_list = genomeTools:::gene_conversion_list
+  gene_conversion_list = genomicTools:::gene_conversion_list
   
   # Convert genes and return
   if (input_id_type == "ensembl_id" && output_id_type == "hgnc_id") {return(gene_conversion_list$ensembl_id_hgnc_id[gene_ids])}
