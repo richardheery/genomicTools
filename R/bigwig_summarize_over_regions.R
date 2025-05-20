@@ -56,7 +56,7 @@ bigwig_summarize_over_regions = function(bw_filepaths, bed_filepath = NULL,
   dir.create(temp_dir)
   
   # Create names for the output files that will be produced by bigWigAverageOverBed  
-  summary_over_bed_file_names = paste0(tools::file_path_sans_ext(basename(bw_filepaths)), "_summary_over_bed.txt")
+  summary_over_bed_file_names = paste(temp_dir, paste0(tools::file_path_sans_ext(basename(bw_filepaths)), "_summary_over_bed.txt"), sep ="/")
   
   # If no sample names provided, set to the basename of the input bigwig-files
   if(is.null(column_names)){column_names = basename(tools::file_path_sans_ext(bw_filepaths))}
@@ -74,12 +74,12 @@ bigwig_summarize_over_regions = function(bw_filepaths, bed_filepath = NULL,
   # Use bigWigAverageOverBed to calculate mean value for each bigwig file for each region in the BED file and save the results in output directory
   foreach::foreach(bigwig_number = seq_along(bw_filepaths)) %dopar% {
     system(paste(system.file("extdata", "bigWigAverageOverBed", package = "genomicTools"), bw_filepaths[bigwig_number], bed_filepath, 
-      paste(temp_dir, summary_over_bed_file_names[bigwig_number], sep = "/")), ignore.stderr = TRUE)}
+      summary_over_bed_file_names[bigwig_number]), ignore.stderr = TRUE)}
   
   # Create a matrix with rows corresponding to genomic regions and columns corresponding to genomic features
   region_values = data.frame(foreach::foreach(result_file = 
-   list.files(temp_dir, full.names = T), .combine = "cbind") %dopar% {
-     data.table::fread(result_file, sep = "\t", header = F, select = statistic_col, nThread = 1)
+   summary_over_bed_file_names, .combine = "cbind") %dopar% {
+     data.frame(data.table::fread(result_file, sep = "\t", header = F, select = c(1, statistic_col), nThread = 1), row.names = 1)[region_names, ]
   })
   
   # Remove temporary files
