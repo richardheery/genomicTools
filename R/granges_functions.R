@@ -143,3 +143,40 @@ filter_gr = function(gr, column, values, invert = FALSE){
   
 }
 
+#' Return the regions in a query GRanges which overlap a subject GRanges, keeping the metadata from query regions
+#'
+#' @param gr1 A GRanges object.
+#' @param gr2 A GRanges object.
+#' @return A GRanges object. 
+#' @export
+bedtools_intersect = function(query_gr, subject_gr){
+  
+  # Create a data.frame from query_gr and subtract 1 from start so that it is 0-based
+  query_gr_df = data.frame(query_gr)
+  query_gr_df$start = query_gr_df$start - 1
+  
+  # Create a temporary BED file and write query_gr_df there
+  query_gr_tempbed = tempfile()
+  data.table::fwrite(query_gr_df, query_gr_tempbed, sep = "\t", col.names = F, quote = F)
+  
+  # Reduce subject_gr to unique regions
+  subject_gr = reduce(subject_gr, ignore.strand = T)
+  
+  # Create a data.frame from subject_gr and subtract 1 from start so that it is 0-based
+  subject_gr_df = data.frame(subject_gr)
+  subject_gr_df$start = subject_gr_df$start - 1
+  
+  # Create a temporary BED file and write subject_gr_df there
+  subject_gr_tempbed = tempfile()
+  data.table::fwrite(subject_gr_df, subject_gr_tempbed, sep = "\t", col.names = F, quote = F)
+  
+  # Run bedtools intersect and save to a temporary file
+  intersect_bed = tempfile()
+  system(paste("bedtools intersect -a", query_gr_tempbed, "-b", subject_gr_tempbed, ">", intersect_bed))
+  
+  # Read in the result of bedtools intersect and convert to a GRages and return
+  intersect_df = data.table::fread(intersect_bed, col.names = names(query_gr_df))
+  intersect_gr = makeGRangesFromDataFrame(intersect_df, starts.in.df.are.0based = T, keep.extra.columns = T)
+  return(intersect_gr)
+  
+}

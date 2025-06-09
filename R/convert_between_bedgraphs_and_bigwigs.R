@@ -3,27 +3,19 @@
 #' Convert begGraph files to bigWig files and save in a specified directory. 
 #' bedGraph files can be compressed with gzip. Takes ~ 1 minute per file. If more than one file, each file can be processed in parallel.
 #'
-#' @param bg_files Paths to a directory of bedGraph files 
-#' @param genome_build Either "hg19" or "hg38" depending on the intended output genome
-#' @param output_dir Name of the directory where created bigWigs will be saved. Default is current working directory
-#' @param ncores The number of cores to use. Default 1
+#' @param bg_files Paths to a directory of bedGraph files.
+#' @param chrom_sizes_file Path to a file with the chromosome sizes for the relevant genome.
+#' @param output_dir Name of the directory where created bigWigs will be saved. Default is current working directory.
+#' @param ncores The number of cores to use. Default 1.
 #' @return None
 #' @export
-convert_bedgraphs_to_bigwigs = function(bg_files, genome_build, output_dir = ".", ncores = 1){
+convert_bedgraphs_to_bigwigs = function(bg_files, chrom_sizes_file, output_dir = ".", ncores = 1){
   
-  # Check that allowed values are entered for genome_build and theat ncores is a positive whole integer
-  match.arg(arg = genome_build, choices = c("hg19", "hg38"), several.ok = F)
+  # Check thatncores is a positive whole integer
   if(ncores %% 1 != 0 | ncores < 0){stop("ncores must be a positive whole number")}
   
   # Create output_dir if it doesn't exist
   dir.create(output_dir, showWarnings = F)
-  
-  # Set correct chromosome sizes file for genome build
-  if(genome_build == "hg19"){
-    chrom_sizes_file = "~/genomes/genome_files/hg19_chrom_size.tsv"
-  } else {
-    chrom_sizes_file = "~/genomes/genome_files/hg38_chrom_size.tsv"
-  }
   
   # Make a cluster if more than one core being used
   if(ncores > 1){
